@@ -120,7 +120,7 @@ def rotate_image_on_setting(img_normalized, plot_setting):
         rotated_image = img_normalized.copy()
 
     return rotated_image
-def resize_image_for_speed(img_normalized: np.ndarray, max_size=300) -> np.ndarray:
+def resize_image_for_speed(img_normalized: np.ndarray, max_size=600) -> np.ndarray:
     """
     Функция циклического уменьшения разрешения картинки, пока ее максимальное измерение не будет
     меньше max_size. Сделано по причине проблем с быстродействием.
@@ -129,9 +129,8 @@ def resize_image_for_speed(img_normalized: np.ndarray, max_size=300) -> np.ndarr
     if max(height, width) <= max_size:
         return img_normalized
 
-    scale_factor = max_size / max(height, width)
-    new_width = int(width * scale_factor)
-    new_height = int(height * scale_factor)
+    new_width = max(1, width // 2)
+    new_height = max(1, height // 2)
 
     img_resized = cv2.resize(
         img_normalized,
@@ -139,7 +138,7 @@ def resize_image_for_speed(img_normalized: np.ndarray, max_size=300) -> np.ndarr
         interpolation=cv2.INTER_NEAREST
     )
 
-    return img_resized
+    return resize_image_for_speed(img_resized, max_size)
 
 
 def main():
